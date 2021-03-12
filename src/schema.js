@@ -1,5 +1,5 @@
 /* Core */
-const { gql } = require('apollo-server');
+const { gql } = require('apollo-server-micro');
 
 const typeDefs = gql`
     type Query {
@@ -14,7 +14,8 @@ const typeDefs = gql`
     }
 
     type User {
-        name: String
+        firstName: String
+        lastName: String
         email: String
         password: String
     }

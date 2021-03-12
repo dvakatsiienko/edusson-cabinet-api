@@ -4,6 +4,10 @@ const isEmail = require('isemail');
 const express = require('express');
 const cors = require('cors');
 
+/* Instruments */
+const typeDefs = require('./schema');
+const resolvers = require('./resolvers');
+
 const app = express();
 
 app.use(
@@ -14,33 +18,24 @@ app.use(
     }),
 );
 
-/* Instruments */
-const typeDefs = require('./schema');
-const resolvers = require('./resolvers');
-
 const server = new ApolloServer({
     typeDefs,
     resolvers,
 
-    fetchOptions: {
-        mode: 'no-cors',
-    },
+    // fetchOptions: {
+    //     mode: 'no-cors',
+    // },
 
-    cors: {
-        credentials: true, // ? enable CORS response for requests with credentials (cookies, http authentication)
-        origin: '*', // ? allow request from all domains
-        exposedHeaders: ['Authorization', 'Access-Control-Allow-Origin'],
-        allowedHeaders: ['Authorization', 'Access-Control-Allow-Origin'],
-    },
+    // cors: {
+    //     credentials: true, // ? enable CORS response for requests with credentials (cookies, http authentication)
+    //     origin: '*', // ? allow request from all domains
+    //     exposedHeaders: ['Authorization', 'Access-Control-Allow-Origin'],
+    //     allowedHeaders: ['Authorization', 'Access-Control-Allow-Origin'],
+    // },
 
-    headers: {
-        // cookie: {
-        //     sameSite: 'none',
-        // },
-        // origin: true,
-        // credentials: true,
-        'Access-Control-Allow-Origin': '*',
-    },
+    // headers: {
+    //     'Access-Control-Allow-Origin': '*',
+    // },
 
     context: async ({ req }) => {
         // simple auth check on every request
@@ -60,12 +55,10 @@ const server = new ApolloServer({
 
 server.applyMiddleware({ app, cors: false });
 
-(async () => {
-    const result = await app.listen({
-        port: 4000,
-    });
+const result = app.listen({ port: 4000 });
 
-    console.log(result);
-
-    console.log(`🚀 Server ready at ${server.graphqlPath}`);
-})();
+console.log(
+    `🚀 Server ready at http://localhost:${result.address().port}${
+        server.graphqlPath
+    }`,
+);
